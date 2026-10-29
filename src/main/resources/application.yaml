@@ -13,6 +13,7 @@ spring:
       hibernate:
         jdbc:
           time_zone: America/Lima
+        default_batch_fetch_size: 50
   flyway:
     enabled: true
 server:
@@ -20,7 +21,7 @@ server:
 app:
   zone: America/Lima
   cors-origin: ${CORS_ALLOWED_ORIGIN:http://localhost:4200}
-  jwt-secret: ${JWT_SECRET}
+  jwt-secret: ${JWT_SECRET:${app.jwt.secret}}
 springdoc:
   swagger-ui:
     path: /swagger-ui.html

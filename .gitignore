@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Local configuration and work in progress
+/config/application-local.yaml
+/tmp/
+/autoandes-frontend/
