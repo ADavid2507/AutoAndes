@@ -1,3 +1,26 @@
 spring:
   application:
-    name: AutoAndes
+    name: autoandes-backend
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: America/Lima
+  flyway:
+    enabled: true
+server:
+  port: ${PORT:8080}
+app:
+  zone: America/Lima
+  cors-origin: ${CORS_ALLOWED_ORIGIN:http://localhost:4200}
+  jwt-secret: ${JWT_SECRET}
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
