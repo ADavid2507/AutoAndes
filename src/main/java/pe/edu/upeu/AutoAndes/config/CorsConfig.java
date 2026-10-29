@@ -9,7 +9,7 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
     @Bean
-    CorsConfigurationSource corsConfigurationSource(@Value("${app.cors-origin}") String origen) {
+    CorsConfigurationSource corsConfigurationSource(@Value("${app.cors.allowed-origins:http://localhost:4200}") String origen) {
         CorsConfiguration c = new CorsConfiguration();
         c.setAllowedOrigins(List.of(origen));
         c.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));

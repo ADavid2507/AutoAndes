@@ -15,7 +15,7 @@ public class JwtService {
     private final SecretKey key;
     private final Clock reloj;
 
-    public JwtService(@Value("${app.jwt-secret}") String secret, Clock reloj) {
+    public JwtService(@Value("${app.jwt.secret}") String secret, Clock reloj) {
         this.key = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secret));
         this.reloj = reloj;
     }
