@@ -50,4 +50,16 @@ public class VehiculoController {
         return ResponseEntity.noContent().build();
     }
 
+
+    @GetMapping("/paginado")
+    @PreAuthorize("hasAuthority('VEHICULO_LEER')")
+    public PaginaResponseDTO<VehiculoResponseDTO> paginado(@RequestParam(defaultValue="0") int pagina,
+            @RequestParam(defaultValue="10") int tamanio,
+            @RequestParam(defaultValue="id") String ordenarPor,
+            @RequestParam(defaultValue="asc") String direccion,
+            @RequestParam(required=false) String buscar,
+            @RequestParam(required=false) Long clienteId) {
+        return service.buscarPaginado(pagina,tamanio,ordenarPor,direccion,buscar,clienteId);
+    }
+
 }

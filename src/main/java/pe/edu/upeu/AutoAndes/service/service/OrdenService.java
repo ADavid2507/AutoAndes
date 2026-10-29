@@ -14,4 +14,6 @@ public interface OrdenService {
     OrdenResponseDTO anular(Long id, AnulacionRequestDTO request);
 
     List<OrdenResponseDTO> buscar(String placa, EstadoOrden estado, LocalDate desde, LocalDate hasta);
+    PaginaResponseDTO<OrdenResponseDTO> buscarPaginado(int pagina,int tamanio,String ordenarPor,String direccion,String placa,EstadoOrden estado,LocalDate desde,LocalDate hasta);
+
 }

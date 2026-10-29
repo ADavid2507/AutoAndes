@@ -1,5 +1,10 @@
 package pe.edu.upeu.AutoAndes.service.impl;
 
+import pe.edu.upeu.AutoAndes.service.generic.Paginacion;
+import org.springframework.data.jpa.domain.Specification;
+import java.util.Map;
+import java.util.Locale;
+
 import lombok.RequiredArgsConstructor;
 import org.slf4j.*;
 import org.springframework.stereotype.Service;
@@ -80,4 +85,19 @@ public class ServicioServiceImpl implements ServicioService {
         LOG.info("Estado de servicio actualizado id={}", id);
         return mapper.toResponse(s);
     }
+
+    @Override
+    public PaginaResponseDTO<ServicioResponseDTO> buscarPaginado(int pagina,int tamanio,String ordenarPor,String direccion,String buscar) {
+        var pageable=Paginacion.crear(pagina,tamanio,ordenarPor,direccion,Map.of("codigo","codigo","nombre","nombre","precio","precio","duracionMin","duracionMin","activo","activo","id","id"));
+        Specification<Servicio> spec=(root,query,cb)->{
+            var condiciones=new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
+            if(buscar!=null&&!buscar.isBlank()) {
+                String patron="%"+buscar.trim().toLowerCase(Locale.ROOT).replace("\\","\\\\").replace("%","\\%").replace("_","\\_")+"%";
+                condiciones.add(cb.or(cb.like(cb.lower(root.get("codigo")),patron,'\\'),cb.like(cb.lower(root.get("nombre")),patron,'\\')));
+            }
+            return cb.and(condiciones.toArray(jakarta.persistence.criteria.Predicate[]::new));
+        };
+        return PaginaResponseDTO.desde(repository.findAll(spec,pageable).map(mapper::toResponse));
+    }
+
 }

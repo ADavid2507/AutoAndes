@@ -10,7 +10,7 @@ import jakarta.persistence.LockModeType;
 import java.util.*;
 import java.time.LocalDateTime;
 
-public interface VehiculoRepository extends JpaRepository<Vehiculo, Long> {
+public interface VehiculoRepository extends JpaRepository<Vehiculo, Long>, JpaSpecificationExecutor<Vehiculo> {
     boolean existsByPlacaIgnoreCase(String placa);
 
     boolean existsByPlacaIgnoreCaseAndIdNot(String placa, Long id);
