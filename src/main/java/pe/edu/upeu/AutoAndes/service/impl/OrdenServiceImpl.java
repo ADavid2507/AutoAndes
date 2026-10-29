@@ -1,4 +1,5 @@
 package pe.edu.upeu.AutoAndes.service.impl;
+import pe.edu.upeu.AutoAndes.service.generic.Paginacion;
 
 import pe.edu.upeu.AutoAndes.dto.*;
 import pe.edu.upeu.AutoAndes.entity.*;
@@ -94,9 +95,14 @@ public class OrdenServiceImpl implements OrdenService {
     }
 
     public List<OrdenResponseDTO> buscar(String placa, EstadoOrden estado, LocalDate desde, LocalDate hasta) {
+        Specification<OrdenServicio> spec = filtros(placa,estado,desde,hasta);
+        return ordenes.findAll(spec, Sort.by(Sort.Direction.DESC, "fecha", "id")).stream().map(mapper::toResponse).toList();
+    }
+
+    private Specification<OrdenServicio> filtros(String placa,EstadoOrden estado,LocalDate desde,LocalDate hasta) {
         if (desde != null && hasta != null && desde.isAfter(hasta))
             throw new SolicitudInvalidaException("Desde no puede ser posterior a hasta");
-        Specification<OrdenServicio> spec = (root, query, cb) -> {
+        return (root, query, cb) -> {
             List<jakarta.persistence.criteria.Predicate> filtros = new ArrayList<>();
             if (placa != null && !placa.isBlank())
                 filtros.add(cb.equal(cb.upper(root.get("vehiculo").get("placa")), placa.trim().toUpperCase(Locale.ROOT)));
@@ -105,6 +111,11 @@ public class OrdenServiceImpl implements OrdenService {
             if (hasta != null) filtros.add(cb.lessThan(root.get("fecha"), hasta.plusDays(1).atStartOfDay()));
             return cb.and(filtros.toArray(jakarta.persistence.criteria.Predicate[]::new));
         };
-        return ordenes.findAll(spec, Sort.by(Sort.Direction.DESC, "fecha", "id")).stream().map(mapper::toResponse).toList();
     }
+    @Override
+    public PaginaResponseDTO<OrdenResponseDTO> buscarPaginado(int pagina,int tamanio,String ordenarPor,String direccion,String placa,EstadoOrden estado,LocalDate desde,LocalDate hasta) {
+        var pageable=Paginacion.crear(pagina,tamanio,ordenarPor,direccion,Map.of("id","id","numero","numero","fecha","fecha","placa","vehiculo.placa","kilometraje","kilometraje","estado","estado","total","total"));
+        return PaginaResponseDTO.desde(ordenes.findAll(filtros(placa,estado,desde,hasta),pageable).map(mapper::toResponse));
+    }
+
 }

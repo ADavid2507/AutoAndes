@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:autoandes;MODE=Oracle;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: pe.edu.upeu.AutoAndes.OracleCompatibleH2Dialect
+    hibernate:
+      ddl-auto: validate
+app:
+  jwt:
+    secret: YXV0b2FuZGVzLXRlc3Qtb25seS1rZXktMzItYnl0ZXMtbWluaW11bQ==

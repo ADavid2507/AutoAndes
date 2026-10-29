@@ -1,5 +1,10 @@
 package pe.edu.upeu.AutoAndes.service.impl;
 
+import pe.edu.upeu.AutoAndes.service.generic.Paginacion;
+import org.springframework.data.jpa.domain.Specification;
+import java.util.Map;
+import java.util.Locale;
+
 import lombok.RequiredArgsConstructor;
 import org.slf4j.*;
 import org.springframework.stereotype.Service;
@@ -76,6 +81,22 @@ public class VehiculoServiceImpl implements VehiculoService {
         repository.delete(value);
         repository.flush();
         LOG.info("Vehiculo eliminado id={}", id);
+    }
+
+
+    @Override
+    public PaginaResponseDTO<VehiculoResponseDTO> buscarPaginado(int pagina,int tamanio,String ordenarPor,String direccion,String buscar,Long clienteId) {
+        var pageable=Paginacion.crear(pagina,tamanio,ordenarPor,direccion,Map.of("placa","placa","marca","marca","modelo","modelo","anio","anio","clienteNombre","cliente.nombres","id","id"));
+        Specification<Vehiculo> spec=(root,query,cb)->{
+            var condiciones=new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
+            if(buscar!=null&&!buscar.isBlank()) {
+                String patron="%"+buscar.trim().toLowerCase(Locale.ROOT).replace("\\","\\\\").replace("%","\\%").replace("_","\\_")+"%";
+                condiciones.add(cb.or(cb.like(cb.lower(root.get("placa")),patron,'\\'),cb.like(cb.lower(root.get("marca")),patron,'\\'),cb.like(cb.lower(root.get("modelo")),patron,'\\'),cb.like(cb.lower(root.get("cliente").get("nombres")),patron,'\\')));
+            }
+            if(clienteId!=null) condiciones.add(cb.equal(root.get("cliente").get("id"),clienteId));
+            return cb.and(condiciones.toArray(jakarta.persistence.criteria.Predicate[]::new));
+        };
+        return PaginaResponseDTO.desde(repository.findAll(spec,pageable).map(mapper::toResponse));
     }
 
 }

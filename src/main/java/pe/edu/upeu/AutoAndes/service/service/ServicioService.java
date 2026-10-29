@@ -5,4 +5,6 @@ import pe.edu.upeu.AutoAndes.service.generic.CrudService;
 
 public interface ServicioService extends CrudService<ServicioRequestDTO, ServicioResponseDTO, Long> {
     ServicioResponseDTO cambiarEstado(Long id, EstadoServicioRequestDTO request);
+    PaginaResponseDTO<ServicioResponseDTO> buscarPaginado(int pagina,int tamanio,String ordenarPor,String direccion,String buscar);
+
 }

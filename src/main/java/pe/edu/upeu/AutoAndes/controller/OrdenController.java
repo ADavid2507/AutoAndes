@@ -47,4 +47,19 @@ public class OrdenController {
     public OrdenResponseDTO anular(@PathVariable Long id, @Valid @RequestBody AnulacionRequestDTO r) {
         return service.anular(id, r);
     }
+
+    @GetMapping("/paginado")
+    @PreAuthorize("hasAuthority('ORDEN_LEER')")
+    public PaginaResponseDTO<OrdenResponseDTO> paginado(
+            @RequestParam(defaultValue="0") int pagina,
+            @RequestParam(defaultValue="10") int tamanio,
+            @RequestParam(defaultValue="fecha") String ordenarPor,
+            @RequestParam(defaultValue="desc") String direccion,
+            @RequestParam(required=false) String placa,
+            @RequestParam(required=false) EstadoOrden estado,
+            @RequestParam(required=false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) LocalDate desde,
+            @RequestParam(required=false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) LocalDate hasta) {
+        return service.buscarPaginado(pagina,tamanio,ordenarPor,direccion,placa,estado,desde,hasta);
+    }
+
 }
