@@ -55,4 +55,15 @@ public class ServicioController {
     public ServicioResponseDTO estado(@PathVariable Long id, @Valid @RequestBody EstadoServicioRequestDTO r) {
         return service.cambiarEstado(id, r);
     }
+
+    @GetMapping("/paginado")
+    @PreAuthorize("hasAuthority('SERVICIO_LEER')")
+    public PaginaResponseDTO<ServicioResponseDTO> paginado(@RequestParam(defaultValue="0") int pagina,
+            @RequestParam(defaultValue="10") int tamanio,
+            @RequestParam(defaultValue="id") String ordenarPor,
+            @RequestParam(defaultValue="asc") String direccion,
+            @RequestParam(required=false) String buscar) {
+        return service.buscarPaginado(pagina,tamanio,ordenarPor,direccion,buscar);
+    }
+
 }

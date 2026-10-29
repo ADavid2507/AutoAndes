@@ -10,7 +10,7 @@ import jakarta.persistence.LockModeType;
 import java.util.*;
 import java.time.LocalDateTime;
 
-public interface ServicioRepository extends JpaRepository<Servicio, Long> {
+public interface ServicioRepository extends JpaRepository<Servicio, Long>, JpaSpecificationExecutor<Servicio> {
     boolean existsByCodigoIgnoreCase(String codigo);
 
     boolean existsByCodigoIgnoreCaseAndIdNot(String codigo, Long id);
